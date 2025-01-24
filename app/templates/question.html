@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h2>{{ question.text }}</h2>
+    {% if question.image_url %}
+        <img src="{{ question.image_url }}" alt="Question Image">
+    {% endif %}
+    <form>
+        <label><input type="radio" name="answer" value="A"> {{ question.option_a }}</label><br>
+        <label><input type="radio" name="answer" value="B"> {{ question.option_b }}</label><br>
+        <label><input type="radio" name="answer" value="C"> {{ question.option_c }}</label><br>
+        <label><input type="radio" name="answer" value="D"> {{ question.option_d }}</label><br>
+        <button type="button" onclick="checkAnswer('{{ question.correct_answer }}')">Submit</button>
+    </form>
+    <button type="button" onclick="showExplanation()">Explanation</button>
+    <p id="explanation" style="display: none;">{{ question.explanation }}</p>
+
+    <script>
+        function checkAnswer(correctAnswer) {
+            const selectedAnswer = document.querySelector('input[name="answer"]:checked').value;
+            if (selectedAnswer === correctAnswer) {
+                alert("Correct!");
+            } else {
+                alert("Incorrect!");
+            }
+        }
+
+        function showExplanation() {
+            document.getElementById('explanation').style.display = 'block';
+        }
+    </script>
+{% endblock %}

@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="container mx-auto p-4">
+        <h2 class="text-2xl font-bold mb-4">CCNA Practice Exam</h2>
+        
+        <!-- Progress Bar -->
+        <div class="w-full bg-gray-200 rounded-full h-2.5 mb-4">
+            <div class="bg-blue-600 h-2.5 rounded-full" style="width: {{ (1 / total_questions * 100) }}%"></div>
+        </div>
+
+        <!-- Question -->
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <h3 class="text-xl font-semibold mb-4">{{ question.text }}</h3>
+            {% if question.image_url %}
+                <img src="{{ question.image_url }}" alt="Question Image" class="mb-4 rounded-lg">
+            {% endif %}
+            <form id="question-form">
+                <div class="space-y-4">
+                    <!-- Option A -->
+                    <label class="block border border-gray-300 p-3 rounded-lg hover:bg-gray-50">
+                        <input type="radio" name="answer" value="A" class="mr-2">
+                        <span class="font-semibold text-blue-600">A.</span> {{ question.option_a }}
+                    </label>
+                    <!-- Option B -->
+                    <label class="block border border-gray-300 p-3 rounded-lg hover:bg-gray-50">
+                        <input type="radio" name="answer" value="B" class="mr-2">
+                        <span class="font-semibold text-blue-600">B.</span> {{ question.option_b }}
+                    </label>
+                    <!-- Option C -->
+                    <label class="block border border-gray-300 p-3 rounded-lg hover:bg-gray-50">
+                        <input type="radio" name="answer" value="C" class="mr-2">
+                        <span class="font-semibold text-blue-600">C.</span> {{ question.option_c }}
+                    </label>
+                    <!-- Option D -->
+                    <label class="block border border-gray-300 p-3 rounded-lg hover:bg-gray-50">
+                        <input type="radio" name="answer" value="D" class="mr-2">
+                        <span class="font-semibold text-blue-600">D.</span> {{ question.option_d }}
+                    </label>
+                </div>
+                <!-- Submit Button -->
+                <button type="button" onclick="checkAnswer('{{ question.correct_answer }}')" class="mt-6 bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition duration-300">
+                    Submit
+                </button>
+            </form>
+            <!-- Explanation Section -->
+            <div id="explanation-section" class="mt-4 hidden">
+                <p id="explanation" class="p-4 bg-gray-100 rounded-lg">
+                    <span class="font-semibold text-blue-600">Explanation:</span> {{ question.explanation }}
+                </p>
+                <!-- Next Question Button -->
+                <button onclick="loadNextQuestion()" class="mt-4 bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition duration-300">
+                    Next Question
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function checkAnswer(correctAnswer) {
+            const selectedAnswer = document.querySelector('input[name="answer"]:checked');
+            if (!selectedAnswer) {
+                alert("Please select an answer!");
+                return;
+            }
+
+            // Show the explanation section
+            const explanationSection = document.getElementById('explanation-section');
+            explanationSection.classList.remove('hidden');
+
+            // Highlight the correct answer
+            const correctOption = document.querySelector(`input[value="${correctAnswer}"]`).parentElement;
+            correctOption.classList.add('bg-green-100', 'border-green-400');
+
+            // Highlight the selected answer if incorrect
+            if (selectedAnswer.value !== correctAnswer) {
+                selectedAnswer.parentElement.classList.add('bg-red-100', 'border-red-400');
+            }
+        }
+
+        function loadNextQuestion() {
+            // Reload the page to get a new random question
+            window.location.reload();
+        }
+    </script>
+{% endblock %}
