@@ -25,22 +25,38 @@
                     <div class="space-y-4">
                         <!-- Option A -->
                         <label class="block border border-gray-300 p-3 rounded-lg hover:bg-gray-50">
-                            <input type="radio" name="answer" value="A" class="mr-2">
+                            {% if question.correct_answer|length > 1 %}
+                                <input type="checkbox" name="answer" value="A" class="mr-2">
+                            {% else %}
+                                <input type="radio" name="answer" value="A" class="mr-2">
+                            {% endif %}
                             <span class="font-semibold text-blue-600">A.</span> {{ question.option_a }}
                         </label>
                         <!-- Option B -->
                         <label class="block border border-gray-300 p-3 rounded-lg hover:bg-gray-50">
-                            <input type="radio" name="answer" value="B" class="mr-2">
+                            {% if question.correct_answer|length > 1 %}
+                                <input type="checkbox" name="answer" value="B" class="mr-2">
+                            {% else %}
+                                <input type="radio" name="answer" value="B" class="mr-2">
+                            {% endif %}
                             <span class="font-semibold text-blue-600">B.</span> {{ question.option_b }}
                         </label>
                         <!-- Option C -->
                         <label class="block border border-gray-300 p-3 rounded-lg hover:bg-gray-50">
-                            <input type="radio" name="answer" value="C" class="mr-2">
+                            {% if question.correct_answer|length > 1 %}
+                                <input type="checkbox" name="answer" value="C" class="mr-2">
+                            {% else %}
+                                <input type="radio" name="answer" value="C" class="mr-2">
+                            {% endif %}
                             <span class="font-semibold text-blue-600">C.</span> {{ question.option_c }}
                         </label>
                         <!-- Option D -->
                         <label class="block border border-gray-300 p-3 rounded-lg hover:bg-gray-50">
-                            <input type="radio" name="answer" value="D" class="mr-2">
+                            {% if question.correct_answer|length > 1 %}
+                                <input type="checkbox" name="answer" value="D" class="mr-2">
+                            {% else %}
+                                <input type="radio" name="answer" value="D" class="mr-2">
+                            {% endif %}
                             <span class="font-semibold text-blue-600">D.</span> {{ question.option_d }}
                         </label>
                     </div>
@@ -54,6 +70,8 @@
                     <p id="explanation" class="p-4 bg-gray-100 rounded-lg">
                         <span class="font-semibold text-blue-600">Explanation:</span> {{ question.explanation }}
                     </p>
+                    <!-- Feedback Section -->
+                    <p id="feedback" class="p-4 mt-4 rounded-lg hidden"></p>
                     <!-- Next Question Button -->
                     <button onclick="loadNextQuestion()" class="mt-4 bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition duration-300">
                         Next Question
@@ -80,24 +98,46 @@
     </div>
 
     <script>
-        function checkAnswer(correctAnswer) {
-            const selectedAnswer = document.querySelector('input[name="answer"]:checked');
-            if (!selectedAnswer) {
-                alert("Please select an answer!");
+        function checkAnswer(correctAnswers) {
+            const selectedAnswers = document.querySelectorAll('input[name="answer"]:checked');
+            if (selectedAnswers.length === 0) {
+                alert("Please select at least one answer!");
                 return;
             }
+
+            // Convert correctAnswers string (e.g., "A,B,C") to an array
+            const correctAnswersArray = correctAnswers.split(',');
 
             // Show the explanation section
             const explanationSection = document.getElementById('explanation-section');
             explanationSection.classList.remove('hidden');
 
-            // Highlight the correct answer
-            const correctOption = document.querySelector(`input[value="${correctAnswer}"]`).parentElement;
-            correctOption.classList.add('bg-green-100', 'border-green-400');
+            // Highlight the correct answers
+            correctAnswersArray.forEach(answer => {
+                const correctOption = document.querySelector(`input[value="${answer}"]`).parentElement;
+                correctOption.classList.add('bg-green-100', 'border-green-400');
+            });
 
-            // Highlight the selected answer if incorrect
-            if (selectedAnswer.value !== correctAnswer) {
-                selectedAnswer.parentElement.classList.add('bg-red-100', 'border-red-400');
+            // Highlight the selected answers if incorrect
+            selectedAnswers.forEach(selectedAnswer => {
+                if (!correctAnswersArray.includes(selectedAnswer.value)) {
+                    selectedAnswer.parentElement.classList.add('bg-red-100', 'border-red-400');
+                }
+            });
+
+            // Show feedback
+            const selectedValues = Array.from(selectedAnswers).map(input => input.value);
+            const isCorrect = selectedValues.every(value => correctAnswersArray.includes(value)) &&
+                              selectedValues.length === correctAnswersArray.length;
+
+            const feedback = document.getElementById('feedback');
+            feedback.classList.remove('hidden');
+            if (isCorrect) {
+                feedback.textContent = "Correct!";
+                feedback.classList.add('bg-green-100', 'text-green-700');
+            } else {
+                feedback.textContent = "Incorrect!";
+                feedback.classList.add('bg-red-100', 'text-red-700');
             }
         }
 

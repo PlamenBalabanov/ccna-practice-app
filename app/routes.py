@@ -62,7 +62,7 @@ def add_question():
                             option_b=row['option_b'],
                             option_c=row['option_c'],
                             option_d=row['option_d'],
-                            correct_answer=row['correct_answer'],
+                            correct_answer=row['correct_answer'],  # e.g., "A,B,C"
                             explanation=row['explanation']
                         )
                         db.session.add(new_question)
@@ -81,7 +81,7 @@ def add_question():
             option_b = request.form['option_b']
             option_c = request.form['option_c']
             option_d = request.form['option_d']
-            correct_answer = request.form['correct_answer']
+            correct_answer = request.form['correct_answer']  # e.g., "A,B,C"
             explanation = request.form['explanation']
 
             new_question = Question(

@@ -8,8 +8,8 @@ class Question(db.Model):
     option_b = db.Column(db.String(200), nullable=False)
     option_c = db.Column(db.String(200), nullable=False)
     option_d = db.Column(db.String(200), nullable=False)
-    correct_answer = db.Column(db.String(1), nullable=False)
-    explanation = db.Column(db.String(500))
+    correct_answer = db.Column(db.String(10), nullable=False)  # Store multiple answers as "A,B,C"
+    explanation = db.Column(db.String(1000))
 
     def __repr__(self):
         return f'<Question {self.text}>'
