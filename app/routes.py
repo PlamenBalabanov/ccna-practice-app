@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, session
 from app import app, db
 from app.models import Question
 from sqlalchemy.sql import func
@@ -7,18 +7,43 @@ from io import TextIOWrapper
 
 @app.route('/')
 def index():
-    # Fetch a random question
-    question = Question.query.order_by(func.random()).first()
-    total_questions = Question.query.count()
-    return render_template('index.html', question=question, total_questions=total_questions)
+    # Initialize session for seen questions if not already set
+    if 'seen_questions' not in session:
+        session['seen_questions'] = []
 
-#@app.route('/delete/<int:question_id>', methods=['POST'])
-#def delete_question(question_id):
-#    question = Question.query.get_or_404(question_id)
-#    db.session.delete(question)
-#    db.session.commit()
-#    flash('Question deleted successfully!', 'success')
-#    return redirect(url_for('index'))
+    # Fetch a random question that the user hasn't seen yet
+    total_questions = Question.query.count()
+    if len(session['seen_questions']) >= total_questions:
+        flash('You have answered all the questions!', 'info')
+        return render_template('index.html', question=None, total_questions=total_questions, progress=100)
+
+    # Get a random question not in the seen_questions list
+    question = Question.query.filter(~Question.id.in_(session['seen_questions'])).order_by(func.random()).first()
+
+    # Add the question ID to the seen_questions list
+    if question:
+        session['seen_questions'].append(question.id)
+        session.modified = True  # Ensure the session is saved
+
+    # Calculate progress
+    progress = len(session['seen_questions']) / total_questions * 100
+
+    return render_template('index.html', question=question, total_questions=total_questions, progress=progress)
+
+@app.route('/reset', methods=['POST'])
+def reset_session():
+    # Reset the seen_questions list
+    session['seen_questions'] = []
+    session.modified = True
+    return redirect(url_for('index'))
+
+@app.route('/delete/<int:question_id>', methods=['POST'])
+def delete_question(question_id):
+    question = Question.query.get_or_404(question_id)
+    db.session.delete(question)
+    db.session.commit()
+    flash('Question deleted successfully!', 'success')
+    return redirect(url_for('index'))
 
 @app.route('/add', methods=['GET', 'POST'])
 def add_question():
@@ -27,21 +52,25 @@ def add_question():
             # Handle bulk upload via CSV
             csv_file = request.files['csv_file']
             if csv_file.filename.endswith('.csv'):
-                csv_reader = csv.DictReader(TextIOWrapper(csv_file, encoding='utf-8'))
-                for row in csv_reader:
-                    new_question = Question(
-                        text=row['text'],
-                        image_url=row['image_url'],
-                        option_a=row['option_a'],
-                        option_b=row['option_b'],
-                        option_c=row['option_c'],
-                        option_d=row['option_d'],
-                        correct_answer=row['correct_answer'],
-                        explanation=row['explanation']
-                    )
-                    db.session.add(new_question)
-                db.session.commit()
-                flash('Questions uploaded successfully!', 'success')
+                try:
+                    csv_reader = csv.DictReader(TextIOWrapper(csv_file, encoding='utf-8'))
+                    for row in csv_reader:
+                        new_question = Question(
+                            text=row['text'],
+                            image_url=row['image_url'],
+                            option_a=row['option_a'],
+                            option_b=row['option_b'],
+                            option_c=row['option_c'],
+                            option_d=row['option_d'],
+                            correct_answer=row['correct_answer'],
+                            explanation=row['explanation']
+                        )
+                        db.session.add(new_question)
+                    db.session.commit()
+                    flash('Questions uploaded successfully!', 'success')
+                except Exception as e:
+                    db.session.rollback()
+                    flash(f'Error uploading CSV: {str(e)}', 'error')
             else:
                 flash('Invalid file format. Please upload a CSV file.', 'error')
         else:
