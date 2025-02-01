@@ -60,8 +60,8 @@
                             <span class="font-semibold text-blue-600">D.</span> {{ question.option_d }}
                         </label>
                     </div>
-                    <!-- Submit Button -->
-                    <button type="button" onclick="checkAnswer('{{ question.correct_answer }}')" class="mt-6 bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition duration-300">
+                    <!-- Submit/Next Question Button -->
+                    <button type="button" id="submit-button" onclick="checkAnswer('{{ question.correct_answer }}')" class="mt-6 bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition duration-300">
                         Submit
                     </button>
                 </form>
@@ -72,10 +72,6 @@
                     </p>
                     <!-- Feedback Section -->
                     <p id="feedback" class="p-4 mt-4 rounded-lg hidden"></p>
-                    <!-- Next Question Button -->
-                    <button onclick="loadNextQuestion()" class="mt-4 bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition duration-300">
-                        Next Question
-                    </button>
                 </div>
                 <!-- Delete Question Button -->
                 <form action="{{ url_for('delete_question', question_id=question.id) }}" method="POST" class="mt-4">
@@ -139,6 +135,13 @@
                 feedback.textContent = "Incorrect!";
                 feedback.classList.add('bg-red-100', 'text-red-700');
             }
+
+            // Change the Submit button to Next Question
+            const submitButton = document.getElementById('submit-button');
+            submitButton.textContent = "Next Question";
+            submitButton.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+            submitButton.classList.add('bg-green-600', 'hover:bg-green-700');
+            submitButton.setAttribute('onclick', 'loadNextQuestion()');
         }
 
         function loadNextQuestion() {
