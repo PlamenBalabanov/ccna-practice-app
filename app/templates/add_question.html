@@ -9,7 +9,8 @@
             <div class="space-y-4">
                 <label class="block">
                     <span class="text-gray-700">Question Text:</span>
-                    <textarea name="text" rows="4" class="mt-1 block w-full rounded-lg border-gray-300" required></textarea>
+                    <textarea name="text" rows="6" class="mt-1 block w-full rounded-lg border-gray-300 font-mono" required></textarea>
+                    <p class="text-sm text-gray-500 mt-1">Use line breaks for formatting. Use &lt;pre&gt; tags for code blocks.</p>
                 </label>
                 <label class="block">
                     <span class="text-gray-700">Image URL (optional):</span>
@@ -32,12 +33,21 @@
                     <input type="text" name="option_d" class="mt-1 block w-full rounded-lg border-gray-300" required>
                 </label>
                 <label class="block">
-                    <span class="text-gray-700">Correct Answer (e.g., A,B,C):</span>
+                    <span class="text-gray-700">Option E (optional):</span>
+                    <input type="text" name="option_e" class="mt-1 block w-full rounded-lg border-gray-300">
+                </label>
+                <label class="block">
+                    <span class="text-gray-700">Option F (optional):</span>
+                    <input type="text" name="option_f" class="mt-1 block w-full rounded-lg border-gray-300">
+                </label>
+                <label class="block">
+                    <span class="text-gray-700">Correct Answer (e.g., A,C,E):</span>
                     <input type="text" name="correct_answer" class="mt-1 block w-full rounded-lg border-gray-300" required>
                 </label>
                 <label class="block">
                     <span class="text-gray-700">Explanation:</span>
-                    <textarea name="explanation" rows="4" class="mt-1 block w-full rounded-lg border-gray-300"></textarea>
+                    <textarea name="explanation" rows="6" class="mt-1 block w-full rounded-lg border-gray-300 font-mono"></textarea>
+                    <p class="text-sm text-gray-500 mt-1">Use line breaks for formatting. Use &lt;pre&gt; tags for code blocks.</p>
                 </label>
                 <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition duration-300">
                     Add Question

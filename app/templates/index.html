@@ -17,7 +17,7 @@
         {% if question %}
             <!-- Question -->
             <div class="bg-white p-6 rounded-lg shadow-md">
-                <h3 class="text-xl font-semibold mb-4">{{ question.text }}</h3>
+                <h3 class="text-xl font-semibold mb-4 whitespace-pre-line">{{ question.text }}</h3>
                 {% if question.image_url %}
                     <img src="{{ question.image_url }}" alt="Question Image" class="mb-4 rounded-lg">
                 {% endif %}
@@ -59,6 +59,28 @@
                             {% endif %}
                             <span class="font-semibold text-blue-600">D.</span> {{ question.option_d }}
                         </label>
+                        <!-- Option E (if it exists) -->
+                        {% if question.option_e %}
+                            <label class="block border border-gray-300 p-3 rounded-lg hover:bg-gray-50">
+                                {% if question.correct_answer|length > 1 %}
+                                    <input type="checkbox" name="answer" value="E" class="mr-2">
+                                {% else %}
+                                    <input type="radio" name="answer" value="E" class="mr-2">
+                                {% endif %}
+                                <span class="font-semibold text-blue-600">E.</span> {{ question.option_e }}
+                            </label>
+                        {% endif %}
+                        <!-- Option F (if it exists) -->
+                        {% if question.option_f %}
+                            <label class="block border border-gray-300 p-3 rounded-lg hover:bg-gray-50">
+                                {% if question.correct_answer|length > 1 %}
+                                    <input type="checkbox" name="answer" value="F" class="mr-2">
+                                {% else %}
+                                    <input type="radio" name="answer" value="F" class="mr-2">
+                                {% endif %}
+                                <span class="font-semibold text-blue-600">F.</span> {{ question.option_f }}
+                            </label>
+                        {% endif %}
                     </div>
                     <!-- Submit/Next Question Button -->
                     <button type="button" id="submit-button" onclick="checkAnswer('{{ question.correct_answer }}')" class="mt-6 bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition duration-300">
@@ -67,7 +89,7 @@
                 </form>
                 <!-- Explanation Section -->
                 <div id="explanation-section" class="mt-4 hidden">
-                    <p id="explanation" class="p-4 bg-gray-100 rounded-lg">
+                    <p id="explanation" class="p-4 bg-gray-100 rounded-lg whitespace-pre-line">
                         <span class="font-semibold text-blue-600">Explanation:</span> {{ question.explanation }}
                     </p>
                     <!-- Feedback Section -->

@@ -81,6 +81,8 @@ def add_question():
             option_b = request.form['option_b']
             option_c = request.form['option_c']
             option_d = request.form['option_d']
+            option_e = request.form.get('option_e', None)
+            option_f = request.form.get('option_f', None)
             correct_answer = request.form['correct_answer']  # e.g., "A,B,C"
             explanation = request.form['explanation']
 
@@ -91,6 +93,8 @@ def add_question():
                 option_b=option_b,
                 option_c=option_c,
                 option_d=option_d,
+		option_e=option_e, 
+		option_f=option_f,
                 correct_answer=correct_answer,
                 explanation=explanation
             )
