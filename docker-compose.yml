@@ -5,10 +5,13 @@ services:
     build: .
     ports:
       - "5001:5000"
-    volumes:
-      - .:/app
+    environment:
+      - FLASK_ENV=production
+      - SECRET_KEY=adi2603
+      - DATABASE_URL=postgresql://ccna_user:ccna_password@db:5432/ccna_db
     depends_on:
       - db
+    restart: unless-stopped  # Auto-restart on failure
 
   db:
     image: postgres:13
@@ -18,6 +21,12 @@ services:
       POSTGRES_DB: ccna_db
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ccna_user -d ccna_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped  # Auto-restart on failure
 
 volumes:
   postgres_data:
