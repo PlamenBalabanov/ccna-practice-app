@@ -4,13 +4,15 @@ services:
   web:
     build: .
     ports:
-      - "5001:5000"
+      - "5001:5000"  # Expose to Nginx only, not directly to the host
     environment:
       - FLASK_ENV=production
       - SECRET_KEY=adi2603
       - DATABASE_URL=postgresql://ccna_user:ccna_password@db:5432/ccna_db
+      - REDIS_URL=redis://redis:6379/0  # For Redis session storage
     depends_on:
       - db
+      - redis
     restart: unless-stopped  # Auto-restart on failure
 
   db:
@@ -28,5 +30,26 @@ services:
       retries: 5
     restart: unless-stopped  # Auto-restart on failure
 
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped  # Auto-restart on failure
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "81:80"  # Expose HTTP to the host
+      - "443:443"  # Reserved for future SSL
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf  # Nginx config
+      - ./app/static:/app/app/static  # Serve static files directly
+    depends_on:
+      - web
+    restart: unless-stopped  # Auto-restart on failure
+
 volumes:
   postgres_data:
+  redis_data:
