@@ -3,41 +3,135 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CCNA Quiz</title>
+    <title>CCNA Exam Questions</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <style>
-        pre {
-            background-color: #f3f4f6;
-            padding: 1rem;
-            border-radius: 0.5rem;
-            font-family: monospace;
-            white-space: pre-wrap;
-            word-wrap: break-word;
+        pre { 
+            background-color: #f3f4f6; 
+            padding: 1rem; 
+            border-radius: 0.5rem; 
+            font-family: monospace; 
+            white-space: pre-wrap; 
+            word-wrap: break-word; 
+        }
+        /* Mobile menu styles */
+        #nav-menu {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 80%;
+            height: 100%;
+            background-color: #2563eb;
+            transition: right 0.3s ease-in-out;
+            z-index: 50;
+            padding-top: 4rem;
+            box-shadow: -4px 0 15px rgba(0,0,0,0.2);
+        }
+        #nav-menu.active {
+            right: 0;
+        }
+        #menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 40;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+            pointer-events: none;
+        }
+        #menu-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        @media (min-width: 1024px) {
+            #nav-menu {
+                position: static;
+                width: auto;
+                height: auto;
+                background-color: transparent;
+                padding-top: 0;
+                right: auto;
+                display: flex !important;
+                box-shadow: none;
+            }
+            #nav-menu ul {
+                flex-direction: row;
+                space-y-0;
+                space-x-4;
+            }
+            #nav-menu ul li a {
+                hover:text-blue-300;
+                padding: 0;
+            }
         }
     </style>
 </head>
 <body class="bg-gray-100 text-gray-900">
     <header class="bg-blue-600 text-white py-4">
         <div class="container mx-auto px-4 flex justify-between items-center">
-            <h1 class="text-3xl font-bold">CCNA Practice Questions</h1>
-            <nav>
-                <ul class="flex space-x-4">
-                    <li><a href="{{ url_for('index') }}" class="hover:text-blue-300">Home</a></li>
-                    <li><a href="{{ url_for('about_us') }}" class="hover:text-blue-300">About Us</a></li>
-                    <li><a href="{{ url_for('contact') }}" class="hover:text-blue-300">Contact</a></li>
-                    <li><a href="{{ url_for('privacy_policy') }}" class="hover:text-blue-300">Privacy Policy</a></li>
-                    <li><a href="{{ url_for('terms_of_service') }}" class="hover:text-blue-300">Terms of Service</a></li>
+            <h1 class="text-3xl font-bold">CCNA Practice Exam</h1>
+            
+            <!-- Hamburger Menu for Mobile -->
+            <button id="menu-toggle" class="lg:hidden focus:outline-none z-50 relative">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path id="menu-icon-bars" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                    <path id="menu-icon-close" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+
+            <!-- Navigation Menu -->
+            <nav id="nav-menu" class="hidden lg:flex lg:space-x-4">
+                <ul class="flex flex-col lg:flex-row space-y-2 lg:space-y-0 lg:space-x-4">
+                    <li><a href="{{ url_for('index') }}" class="block lg:inline-block py-2 lg:py-0 hover:bg-blue-700 px-4 rounded">Home</a></li>
+                    <li><a href="{{ url_for('about_us') }}" class="block lg:inline-block py-2 lg:py-0 hover:bg-blue-700 px-4 rounded">About Us</a></li>
+                    <li><a href="{{ url_for('contact') }}" class="block lg:inline-block py-2 lg:py-0 hover:bg-blue-700 px-4 rounded">Contact</a></li>
+                    <li><a href="{{ url_for('privacy_policy') }}" class="block lg:inline-block py-2 lg:py-0 hover:bg-blue-700 px-4 rounded">Privacy Policy</a></li>
+                    <li><a href="{{ url_for('terms_of_service') }}" class="block lg:inline-block py-2 lg:py-0 hover:bg-blue-700 px-4 rounded">Terms of Service</a></li>
                 </ul>
             </nav>
         </div>
     </header>
+
+    <!-- Overlay for mobile menu -->
+    <div id="menu-overlay"></div>
+
     <main class="container mx-auto p-4">
         {% block content %}{% endblock %}
     </main>
+
     <footer class="bg-blue-600 text-white py-4 mt-8">
         <div class="container mx-auto px-4 text-center">
-            <p>&copy; CCNA 200-301 Practice Questions. Create by P.Balabanov  </p>
+            <p>&copy; 2025 CCNA-Questions.com | Cisco Networking Certification Exam Prep Resources. </p>
         </div>
     </footer>
+
+    <!-- JavaScript for Hamburger Menu -->
+    <script>
+        const menuToggle = document.getElementById('menu-toggle');
+        const navMenu = document.getElementById('nav-menu');
+        const menuOverlay = document.getElementById('menu-overlay');
+        const menuIconBars = document.getElementById('menu-icon-bars');
+        const menuIconClose = document.getElementById('menu-icon-close');
+
+        menuToggle.addEventListener('click', () => {
+            navMenu.classList.toggle('hidden');
+            navMenu.classList.toggle('active');
+            menuOverlay.classList.toggle('active');
+            menuIconBars.classList.toggle('hidden');
+            menuIconClose.classList.toggle('hidden');
+        });
+
+        // Close menu when clicking outside
+        menuOverlay.addEventListener('click', () => {
+            navMenu.classList.add('hidden');
+            navMenu.classList.remove('active');
+            menuOverlay.classList.remove('active');
+            menuIconBars.classList.remove('hidden');
+            menuIconClose.classList.add('hidden');
+        });
+    </script>
 </body>
 </html>
