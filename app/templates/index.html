@@ -3,8 +3,7 @@
 {% block content %}
     <div class="container mx-auto p-4">
         <h2 class="text-2xl font-bold mb-4">CCNA Practice Exam</h2>
-        
-        <!-- Progress Bar and Question Count -->
+
         <div class="mb-4">
             <div class="w-full bg-gray-200 rounded-full h-2.5 mb-2">
                 <div class="bg-blue-600 h-2.5 rounded-full" style="width: {{ progress }}%"></div>
@@ -15,7 +14,6 @@
         </div>
 
         {% if question %}
-            <!-- Question -->
             <div class="bg-white p-6 rounded-lg shadow-md">
                 <h3 class="text-xl font-semibold mb-4 whitespace-pre-line">{{ question.text }}</h3>
                 {% if question.image_url %}
@@ -23,79 +21,30 @@
                 {% endif %}
                 <form id="question-form">
                     <div class="space-y-4">
-                        <!-- Option A -->
-                        <label class="block border border-gray-300 p-3 rounded-lg hover:bg-gray-50">
-                            {% if question.correct_answer|length > 1 %}
-                                <input type="checkbox" name="answer" value="A" class="mr-2">
-                            {% else %}
-                                <input type="radio" name="answer" value="A" class="mr-2">
-                            {% endif %}
-                            <span class="font-semibold text-blue-600">A.</span> {{ question.option_a }}
-                        </label>
-                        <!-- Option B -->
-                        <label class="block border border-gray-300 p-3 rounded-lg hover:bg-gray-50">
-                            {% if question.correct_answer|length > 1 %}
-                                <input type="checkbox" name="answer" value="B" class="mr-2">
-                            {% else %}
-                                <input type="radio" name="answer" value="B" class="mr-2">
-                            {% endif %}
-                            <span class="font-semibold text-blue-600">B.</span> {{ question.option_b }}
-                        </label>
-                        <!-- Option C -->
-                        <label class="block border border-gray-300 p-3 rounded-lg hover:bg-gray-50">
-                            {% if question.correct_answer|length > 1 %}
-                                <input type="checkbox" name="answer" value="C" class="mr-2">
-                            {% else %}
-                                <input type="radio" name="answer" value="C" class="mr-2">
-                            {% endif %}
-                            <span class="font-semibold text-blue-600">C.</span> {{ question.option_c }}
-                        </label>
-                        <!-- Option D -->
-                        <label class="block border border-gray-300 p-3 rounded-lg hover:bg-gray-50">
-                            {% if question.correct_answer|length > 1 %}
-                                <input type="checkbox" name="answer" value="D" class="mr-2">
-                            {% else %}
-                                <input type="radio" name="answer" value="D" class="mr-2">
-                            {% endif %}
-                            <span class="font-semibold text-blue-600">D.</span> {{ question.option_d }}
-                        </label>
-                        <!-- Option E (if it exists) -->
-                        {% if question.option_e %}
+                        {% for option, label in [('A', question.option_a), ('B', question.option_b), ('C', question.option_c), ('D', question.option_d), ('E', question.option_e), ('F', question.option_f)] if label %}
                             <label class="block border border-gray-300 p-3 rounded-lg hover:bg-gray-50">
                                 {% if question.correct_answer|length > 1 %}
-                                    <input type="checkbox" name="answer" value="E" class="mr-2">
+                                    <input type="checkbox" name="answer" value="{{ option }}" class="mr-2">
                                 {% else %}
-                                    <input type="radio" name="answer" value="E" class="mr-2">
+                                    <input type="radio" name="answer" value="{{ option }}" class="mr-2">
                                 {% endif %}
-                                <span class="font-semibold text-blue-600">E.</span> {{ question.option_e }}
+                                <span class="font-semibold text-blue-600">{{ option }}.</span> {{ label }}
                             </label>
-                        {% endif %}
-                        <!-- Option F (if it exists) -->
-                        {% if question.option_f %}
-                            <label class="block border border-gray-300 p-3 rounded-lg hover:bg-gray-50">
-                                {% if question.correct_answer|length > 1 %}
-                                    <input type="checkbox" name="answer" value="F" class="mr-2">
-                                {% else %}
-                                    <input type="radio" name="answer" value="F" class="mr-2">
-                                {% endif %}
-                                <span class="font-semibold text-blue-600">F.</span> {{ question.option_f }}
-                            </label>
-                        {% endif %}
+                        {% endfor %}
                     </div>
-                    <!-- Submit/Next Question Button -->
-                    <button type="button" id="submit-button" onclick="checkAnswer('{{ question.correct_answer }}')" class="mt-6 bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition duration-300">
-                        Submit
-                    </button>
+                    <div class="flex items-center mt-6">
+                        <button type="button" id="submit-button" onclick="checkAnswer('{{ question.correct_answer }}')" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition duration-300">
+                            Submit
+                        </button>
+                        <span id="correct-answers" class="ml-4 font-semibold text-green-600 hidden">Correct Answers: {{ question.correct_answer }}</span>
+                    </div>
                 </form>
-                <!-- Explanation Section -->
                 <div id="explanation-section" class="mt-4 hidden">
                     <p id="explanation" class="p-4 bg-gray-100 rounded-lg whitespace-pre-line">
                         <span class="font-semibold text-blue-600">Explanation:</span> {{ question.explanation }}
                     </p>
-                    <!-- Feedback Section -->
                     <p id="feedback" class="p-4 mt-4 rounded-lg hidden"></p>
                 </div>
-                <!-- Delete Question Button -->
                 <form action="{{ url_for('delete_question', question_id=question.id) }}" method="POST" class="mt-4">
                     <button type="submit" class="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 transition duration-300">
                         Delete Question
@@ -103,7 +52,6 @@
                 </form>
             </div>
         {% else %}
-            <!-- No More Questions -->
             <div class="bg-white p-6 rounded-lg shadow-md text-center">
                 <p class="text-xl font-semibold mb-4">You have answered all the questions!</p>
                 <form action="{{ url_for('reset_session') }}" method="POST">
@@ -123,31 +71,25 @@
                 return;
             }
 
-            // Convert correctAnswers string (e.g., "A,B,C") to an array
             const correctAnswersArray = correctAnswers.split(',');
-
-            // Show the explanation section
-            const explanationSection = document.getElementById('explanation-section');
-            explanationSection.classList.remove('hidden');
-
-            // Highlight the correct answers
+            document.getElementById('explanation-section').classList.remove('hidden');
+            document.getElementById('correct-answers').classList.remove('hidden');
+            
             correctAnswersArray.forEach(answer => {
                 const correctOption = document.querySelector(`input[value="${answer}"]`).parentElement;
                 correctOption.classList.add('bg-green-100', 'border-green-400');
             });
 
-            // Highlight the selected answers if incorrect
             selectedAnswers.forEach(selectedAnswer => {
                 if (!correctAnswersArray.includes(selectedAnswer.value)) {
                     selectedAnswer.parentElement.classList.add('bg-red-100', 'border-red-400');
                 }
             });
 
-            // Show feedback
             const selectedValues = Array.from(selectedAnswers).map(input => input.value);
             const isCorrect = selectedValues.every(value => correctAnswersArray.includes(value)) &&
                               selectedValues.length === correctAnswersArray.length;
-
+            
             const feedback = document.getElementById('feedback');
             feedback.classList.remove('hidden');
             if (isCorrect) {
@@ -158,7 +100,6 @@
                 feedback.classList.add('bg-red-100', 'text-red-700');
             }
 
-            // Change the Submit button to Next Question
             const submitButton = document.getElementById('submit-button');
             submitButton.textContent = "Next Question";
             submitButton.classList.remove('bg-blue-600', 'hover:bg-blue-700');
@@ -167,8 +108,8 @@
         }
 
         function loadNextQuestion() {
-            // Reload the page to get a new random question
             window.location.reload();
         }
     </script>
 {% endblock %}
+
