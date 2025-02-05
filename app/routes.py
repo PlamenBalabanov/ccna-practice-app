@@ -37,13 +37,13 @@ def reset_session():
     session.modified = True
     return redirect(url_for('index'))
 
-@app.route('/delete/<int:question_id>', methods=['POST'])
-def delete_question(question_id):
-    question = Question.query.get_or_404(question_id)
-    db.session.delete(question)
-    db.session.commit()
-    flash('Question deleted successfully!', 'success')
-    return redirect(url_for('index'))
+#@app.route('/delete/<int:question_id>', methods=['POST'])
+#def delete_question(question_id):
+#    question = Question.query.get_or_404(question_id)
+#    db.session.delete(question)
+#    db.session.commit()
+#    flash('Question deleted successfully!', 'success')
+#    return redirect(url_for('index'))
 
 @app.route('/add', methods=['GET', 'POST'])
 def add_question():
@@ -93,8 +93,8 @@ def add_question():
                 option_b=option_b,
                 option_c=option_c,
                 option_d=option_d,
-		option_e=option_e, 
-		option_f=option_f,
+                option_e=option_e,
+                option_f=option_f,
                 correct_answer=correct_answer,
                 explanation=explanation
             )
@@ -104,3 +104,28 @@ def add_question():
         return redirect(url_for('index'))
 
     return render_template('add_question.html')
+
+# New routes for additional pages
+@app.route('/privacy-policy')
+def privacy_policy():
+    return render_template('privacy_policy.html')
+
+@app.route('/about-us')
+def about_us():
+    return render_template('about_us.html')
+
+@app.route('/contact', methods=['GET', 'POST'])
+def contact():
+    if request.method == 'POST':
+        # Handle form submission (e.g., send email)
+        name = request.form.get('name')
+        email = request.form.get('email')
+        message = request.form.get('message')
+        # Add your logic here (e.g., send email or save to database)
+        flash('Your message has been sent!', 'success')
+        return redirect(url_for('contact'))
+    return render_template('contact.html')
+
+@app.route('/terms-of-service')
+def terms_of_service():
+    return render_template('terms_of_service.html')

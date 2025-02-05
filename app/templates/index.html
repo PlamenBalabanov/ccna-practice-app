@@ -45,11 +45,13 @@
                     </p>
                     <p id="feedback" class="p-4 mt-4 rounded-lg hidden"></p>
                 </div>
+		{#
                 <form action="{{ url_for('delete_question', question_id=question.id) }}" method="POST" class="mt-4">
                     <button type="submit" class="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 transition duration-300">
                         Delete Question
                     </button>
                 </form>
+		#}
             </div>
         {% else %}
             <div class="bg-white p-6 rounded-lg shadow-md text-center">
